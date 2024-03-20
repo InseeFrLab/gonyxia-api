@@ -22,12 +22,31 @@ type UserInfo struct {
 	Projects []Project `json:"projects"`
 }
 
-func RegisterUserHandlers(r *gin.Engine) {
-	r.GET("/user/info", func(c *gin.Context) {
+// PingExample godoc
+// @Summary ping example
+// @Schemes
+// @Description do ping
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {string} Helloworld
+// @Router /example/helloworld [get]
+func userInfo(c *gin.Context) {
+	claims, _ := c.Get("claims")
+	var userInfo UserInfo
+	if claims == nil {
+		userInfo = UserInfo{
+			Email:    "johndoe@example.com",
+			ID:       "johndoe",
+			Name:     "John Doe",
+			Groups:   []string{},
+			IP:       c.RemoteIP(),
+			Projects: []Project{{Name: "todo"}},
+		}
 
-		claims, _ := c.Get("claims")
+	} else {
 		typedClaims := claims.(Claims)
-		userInfo := UserInfo{
+		userInfo = UserInfo{
 			Email:    typedClaims.Email,
 			ID:       typedClaims.ID,
 			Name:     typedClaims.Name,
@@ -35,6 +54,10 @@ func RegisterUserHandlers(r *gin.Engine) {
 			IP:       c.RemoteIP(),
 			Projects: []Project{{Name: "todo"}},
 		}
-		c.JSON(http.StatusOK, userInfo)
-	})
+	}
+	c.JSON(http.StatusOK, userInfo)
+}
+
+func registerUserHandlers(r *gin.Engine) {
+	r.GET("/user/info", userInfo)
 }

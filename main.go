@@ -9,12 +9,19 @@ import (
 	oidc "github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
 	cmd "github.com/inseefrlab/onyxia-admin/cmd"
+	_ "github.com/inseefrlab/onyxia-admin/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
+
+// gin-swagger middleware
+// swagger embed files
 
 func main() {
 	loadConfiguration()
 	r := gin.Default()
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 
@@ -36,6 +43,6 @@ func main() {
 		verifier := provider.Verifier(oidcConfig)
 		r.Use(cmd.AuthMiddleware(ctx, verifier))
 	}
-	cmd.RegisterUserHandlers(r)
+	cmd.RegisterHandlers(r)
 	r.Run()
 }
