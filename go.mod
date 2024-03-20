@@ -1,4 +1,4 @@
-module onyxia.sh/admin
+module github.com/inseefrlab/onyxia-admin
 
 go 1.22.1
 
@@ -6,7 +6,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.10.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/spf13/viper v1.18.2
-	google.golang.org/appengine v1.6.8
+	go.uber.org/zap v1.27.0
 )
 
 require (
@@ -49,6 +49,7 @@ require (
 	golang.org/x/oauth2 v0.18.0 // indirect
 	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
