@@ -7,6 +7,7 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
+	pkg "github.com/inseefrlab/onyxia-api/pkg"
 )
 
 type Claims struct {
@@ -31,6 +32,14 @@ func AuthMiddleware(ctx context.Context, verifier *oidc.IDTokenVerifier) gin.Han
 				return
 			}
 			c.Set("claims", IDTokenClaims)
+			c.Set("user", pkg.UserInfo{
+				Email:    IDTokenClaims.Email,
+				ID:       IDTokenClaims.ID,
+				Name:     IDTokenClaims.Name,
+				Groups:   IDTokenClaims.Groups,
+				IP:       c.RemoteIP(),
+				Projects: []pkg.Project{{Name: "todo"}},
+			})
 		}
 
 		c.Next()

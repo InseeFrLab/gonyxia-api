@@ -32,6 +32,7 @@ func main() {
 	r := gin.Default()
 	baseRoutes := r.Group(configuration.Config.RootPath)
 	docs.SwaggerInfo.Description = "Swagger"
+	docs.SwaggerInfo.BasePath = configuration.Config.RootPath
 	baseRoutes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	privateRoutes := baseRoutes.Group("/")
 	publicRoutes := baseRoutes.Group("/public")
@@ -54,6 +55,8 @@ func main() {
 		}
 		verifier := provider.Verifier(oidcConfig)
 		privateRoutes.Use(cmd.AuthMiddleware(ctx, verifier))
+	} else {
+		privateRoutes.Use(cmd.NoAuthMiddleware())
 	}
 
 	kubernetes.InitClient()
