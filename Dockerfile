@@ -9,7 +9,7 @@ RUN go mod download
 
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 RUN ls .
-RUN swag init
+RUN swag init -o api
 RUN ls docs
 
 # Build
