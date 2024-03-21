@@ -12,6 +12,7 @@ on:
     paths-ignore:
       - 'docs/**'
 
+
 jobs:
   docker:
     needs: build
