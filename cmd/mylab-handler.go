@@ -4,8 +4,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/inseefrlab/onyxia-admin/internal/helm"
-	"github.com/inseefrlab/onyxia-admin/internal/kubernetes"
+	"github.com/inseefrlab/onyxia-api/internal/helm"
+	"github.com/inseefrlab/onyxia-api/internal/kubernetes"
 
 	"github.com/gin-gonic/gin"
 	eventsv1 "k8s.io/api/events/v1"

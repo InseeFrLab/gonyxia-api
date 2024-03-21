@@ -8,38 +8,43 @@ import (
 
 	oidc "github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
-	cmd "github.com/inseefrlab/onyxia-admin/cmd"
-	_ "github.com/inseefrlab/onyxia-admin/docs"
-	"github.com/inseefrlab/onyxia-admin/internal/kubernetes"
+	cmd "github.com/inseefrlab/onyxia-api/cmd"
+	_ "github.com/inseefrlab/onyxia-api/docs"
+	configuration "github.com/inseefrlab/onyxia-api/internal/configuration"
+	"github.com/inseefrlab/onyxia-api/internal/kubernetes"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
+)
+
+var (
+	Version = 2
 )
 
 // gin-swagger middleware
 // swagger embed files
 
 func main() {
-	loadConfiguration()
+	configuration.LoadConfiguration()
 	r := gin.Default()
-	baseRoutes := r.Group(config.RootPath)
+	baseRoutes := r.Group(configuration.Config.RootPath)
 	baseRoutes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	privateRoutes := baseRoutes.Group("/")
 	publicRoutes := baseRoutes.Group("/public")
 
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 
-	if config.Authentication.IssuerURI != "" {
-		fmt.Printf("Using authentication with issuer %s", config.Authentication.IssuerURI)
+	if configuration.Config.Authentication.IssuerURI != "" {
+		fmt.Printf("Using authentication with issuer %s", configuration.Config.Authentication.IssuerURI)
 		fmt.Println()
 		client := &http.Client{
 			Timeout: time.Duration(6000) * time.Second,
 		}
 		ctx := oidc.ClientContext(context.Background(), client)
-		provider, _ := oidc.NewProvider(ctx, config.Authentication.IssuerURI)
+		provider, _ := oidc.NewProvider(ctx, configuration.Config.Authentication.IssuerURI)
 		oidcConfig := &oidc.Config{}
-		if config.Authentication.Audience != "" {
-			oidcConfig.ClientID = config.Authentication.Audience
+		if configuration.Config.Authentication.Audience != "" {
+			oidcConfig.ClientID = configuration.Config.Authentication.Audience
 		} else {
 			zap.L().Warn("Token audience validation disabled")
 			oidcConfig.SkipClientIDCheck = true

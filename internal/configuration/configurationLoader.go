@@ -1,4 +1,4 @@
-package main
+package configuration
 
 import (
 	_ "embed"
@@ -9,9 +9,9 @@ import (
 
 //go:embed config.yaml
 var s string
-var config configuration
+var Config Configuration
 
-func loadConfiguration() {
+func LoadConfiguration() {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetConfigType("yaml")
 	viper.ReadConfig(strings.NewReader(s)) // Reading defaults
@@ -23,7 +23,7 @@ func loadConfiguration() {
 	viper.AutomaticEnv()
 	viper.MergeInConfig()
 
-	err := viper.Unmarshal(&config)
+	err := viper.Unmarshal(&Config)
 	if err != nil {
 		panic(err)
 	}
