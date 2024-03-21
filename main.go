@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	cmd "github.com/inseefrlab/onyxia-admin/cmd"
 	_ "github.com/inseefrlab/onyxia-admin/docs"
+	"github.com/inseefrlab/onyxia-admin/internal/kubernetes"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
@@ -43,6 +44,9 @@ func main() {
 		verifier := provider.Verifier(oidcConfig)
 		r.Use(cmd.AuthMiddleware(ctx, verifier))
 	}
+
+	kubernetes.InitClient()
+
 	cmd.RegisterHandlers(r)
 	r.Run()
 }
