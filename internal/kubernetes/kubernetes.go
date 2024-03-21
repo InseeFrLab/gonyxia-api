@@ -7,6 +7,7 @@ import (
 
 	"go.uber.org/zap"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -35,8 +36,8 @@ func InitClient() {
 	zap.L().Sugar().Infof("Kubernetes client initialized, %s", version.String())
 }
 
-func ListPods() {
-	pods, err := clientset.CoreV1().Pods("user-f2wbnp").List(context.TODO(), metav1.ListOptions{})
+func ListPods(namespace string) {
+	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		zap.L().Sugar().Errorf("Failed retrieving pods %s", err)
 	} else {
@@ -44,4 +45,9 @@ func ListPods() {
 			fmt.Println(pod.Name)
 		}
 	}
+}
+
+func GetEvents(namespace string) watch.Interface {
+	events, _ := clientset.EventsV1().Events(namespace).Watch(context.TODO(), metav1.ListOptions{})
+	return events
 }

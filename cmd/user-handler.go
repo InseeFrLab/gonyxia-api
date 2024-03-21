@@ -22,15 +22,13 @@ type UserInfo struct {
 	Projects []Project `json:"projects"`
 }
 
-// PingExample godoc
-// @Summary ping example
+// @Summary Get user info
 // @Schemes
-// @Description do ping
-// @Tags example
-// @Accept json
+// @Description Get user info and projects
+// @Tags user
 // @Produce json
-// @Success 200 {string} Helloworld
-// @Router /example/helloworld [get]
+// @Success 200
+// @Router /user/info [get]
 func userInfo(c *gin.Context) {
 	claims, _ := c.Get("claims")
 	var userInfo UserInfo
