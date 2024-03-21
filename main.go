@@ -10,26 +10,28 @@ import (
 	oidc "github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	docs "github.com/inseefrlab/onyxia-api/api"
 	cmd "github.com/inseefrlab/onyxia-api/cmd"
-	_ "github.com/inseefrlab/onyxia-api/docs"
 	configuration "github.com/inseefrlab/onyxia-api/internal/configuration"
 	"github.com/inseefrlab/onyxia-api/internal/kubernetes"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
+
+	_ "embed"
 )
 
-var (
-	Version = 2
-)
+//go:embed default.yaml
+var defaultConfiguration string
 
 // gin-swagger middleware
 // swagger embed files
 
 func main() {
-	configuration.LoadConfiguration()
+	configuration.LoadConfiguration(defaultConfiguration)
 	r := gin.Default()
 	baseRoutes := r.Group(configuration.Config.RootPath)
+	docs.SwaggerInfo.Description = "Swagger"
 	baseRoutes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	privateRoutes := baseRoutes.Group("/")
 	publicRoutes := baseRoutes.Group("/public")
