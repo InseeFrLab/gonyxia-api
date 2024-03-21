@@ -1,5 +1,25 @@
 package configuration
 
+type Configuration struct {
+	Authentication Authentication
+	RootPath       string
+	Regions        []Region
+	OIDC           OIDC `json:"oidc"`
+}
+
+type Authentication struct {
+	Mode string `json:"mode"`
+}
+
+type OIDC struct {
+	IssuerURI        string `json:"issuer-uri"`
+	ClientID         string `json:"clientID"`
+	Audience         string `json:"audience"`
+	UsernameClaim    string `json:"username-claim"`
+	GroupsClaim      string `json:"groups-claim"`
+	ExtraQueryParams string `json:"extra-query-params"`
+}
+
 type Region struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`
@@ -152,15 +172,4 @@ type Region struct {
 		} `json:"oidcConfiguration"`
 		URL string `json:"URL"`
 	} `json:"git"`
-}
-
-type Configuration struct {
-	Authentication Authentication
-	RootPath       string
-	Regions        []Region
-}
-
-type Authentication struct {
-	IssuerURI string
-	Audience  string
 }

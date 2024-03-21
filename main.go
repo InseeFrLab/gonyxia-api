@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	oidc "github.com/coreos/go-oidc/v3/oidc"
@@ -34,17 +35,17 @@ func main() {
 
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 
-	if configuration.Config.Authentication.IssuerURI != "" {
-		fmt.Printf("Using authentication with issuer %s", configuration.Config.Authentication.IssuerURI)
+	if strings.EqualFold(configuration.Config.Authentication.Mode, "openidconnect") {
+		fmt.Printf("Using OIDC authentication with issuer %s", configuration.Config.OIDC.IssuerURI)
 		fmt.Println()
 		client := &http.Client{
 			Timeout: time.Duration(6000) * time.Second,
 		}
 		ctx := oidc.ClientContext(context.Background(), client)
-		provider, _ := oidc.NewProvider(ctx, configuration.Config.Authentication.IssuerURI)
+		provider, _ := oidc.NewProvider(ctx, configuration.Config.OIDC.IssuerURI)
 		oidcConfig := &oidc.Config{}
-		if configuration.Config.Authentication.Audience != "" {
-			oidcConfig.ClientID = configuration.Config.Authentication.Audience
+		if configuration.Config.OIDC.Audience != "" {
+			oidcConfig.ClientID = configuration.Config.OIDC.Audience
 		} else {
 			zap.L().Warn("Token audience validation disabled")
 			oidcConfig.SkipClientIDCheck = true

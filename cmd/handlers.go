@@ -9,4 +9,5 @@ func RegisterPublicHandlers(r *gin.RouterGroup) {
 func RegisterPrivateHandlers(r *gin.RouterGroup) {
 	registerUserHandlers(r)
 	registerMyLabHandlers(r)
+	registerOnboardingHandlers(r)
 }
