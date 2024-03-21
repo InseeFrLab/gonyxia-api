@@ -36,7 +36,7 @@ func main() {
 	baseRoutes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	privateRoutes := baseRoutes.Group("/")
 	publicRoutes := baseRoutes.Group("/public")
-
+	privateRoutes.Use(cmd.RegionResolver())
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 	if strings.EqualFold(configuration.Config.Authentication.Mode, "openidconnect") {
 		fmt.Printf("Using OIDC authentication with issuer %s", configuration.Config.OIDC.IssuerURI)
