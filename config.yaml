@@ -1,3 +1,4 @@
 authentication:
   issuerURI:
   audience: 
+rootPath: /api

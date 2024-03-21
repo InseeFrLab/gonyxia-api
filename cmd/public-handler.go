@@ -20,6 +20,11 @@ func ip(c *gin.Context) {
 	})
 }
 
-func registerPublicHandlers(r *gin.Engine) {
-	r.GET("/public/ip", ip)
+func healthcheck(c *gin.Context) {
+	c.Status(http.StatusOK)
+}
+
+func registerPublicHandlers(r *gin.RouterGroup) {
+	r.GET("/ip", ip)
+	r.GET("/healthcheck", healthcheck)
 }

@@ -56,6 +56,6 @@ func userInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, userInfo)
 }
 
-func registerUserHandlers(r *gin.Engine) {
+func registerUserHandlers(r *gin.RouterGroup) {
 	r.GET("/user/info", userInfo)
 }

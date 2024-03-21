@@ -22,7 +22,10 @@ import (
 func main() {
 	loadConfiguration()
 	r := gin.Default()
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	baseRoutes := r.Group(config.RootPath)
+	baseRoutes.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	privateRoutes := baseRoutes.Group("/")
+	publicRoutes := baseRoutes.Group("/public")
 
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 
@@ -42,11 +45,12 @@ func main() {
 			oidcConfig.SkipClientIDCheck = true
 		}
 		verifier := provider.Verifier(oidcConfig)
-		r.Use(cmd.AuthMiddleware(ctx, verifier))
+		privateRoutes.Use(cmd.AuthMiddleware(ctx, verifier))
 	}
 
 	kubernetes.InitClient()
 
-	cmd.RegisterHandlers(r)
+	cmd.RegisterPrivateHandlers(privateRoutes)
+	cmd.RegisterPublicHandlers(publicRoutes)
 	r.Run()
 }

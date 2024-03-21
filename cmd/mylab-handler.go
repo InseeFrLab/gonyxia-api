@@ -61,7 +61,7 @@ func quotas(c *gin.Context) {
 	}*/
 }
 
-func registerMyLabHandlers(r *gin.Engine) {
+func registerMyLabHandlers(r *gin.RouterGroup) {
 	r.GET("/my-lab/services", myServices)
 	r.GET("/my-lab/events", events)
 	r.GET("/my-lab/quota", quotas)

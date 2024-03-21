@@ -2,8 +2,11 @@ package cmd
 
 import "github.com/gin-gonic/gin"
 
-func RegisterHandlers(r *gin.Engine) {
+func RegisterPublicHandlers(r *gin.RouterGroup) {
+	registerPublicHandlers(r)
+}
+
+func RegisterPrivateHandlers(r *gin.RouterGroup) {
 	registerUserHandlers(r)
 	registerMyLabHandlers(r)
-	registerPublicHandlers(r)
 }
