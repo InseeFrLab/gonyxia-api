@@ -1,5 +1,7 @@
 package configuration
 
+import "strings"
+
 type Configuration struct {
 	Authentication Authentication
 	RootPath       string
@@ -181,4 +183,8 @@ type Region struct {
 		} `json:"oidcConfiguration"`
 		URL string `json:"URL"`
 	} `json:"git"`
+}
+
+func IsAuthenticationEnabled() bool {
+	return strings.EqualFold(Config.Authentication.Mode, "openidconnect")
 }

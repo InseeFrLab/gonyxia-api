@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"net/http"
 
 	"runtime/debug"
@@ -15,8 +14,14 @@ type BuildInfo struct {
 	CommitDate string `json:"commitDate,omitempty"`
 }
 type PublicConfiguration struct {
-	Build   BuildInfo   `json:"build"`
-	Regions interface{} `json:"regions"`
+	Build             BuildInfo          `json:"build"`
+	Regions           interface{}        `json:"regions"`
+	OIDCConfiguration *OIDCConfiguration `json:"oidcConfiguration,omitempty"`
+}
+type OIDCConfiguration struct {
+	IssuerURI        string `json:"issuerURI,omitempty"`
+	ClientID         string `json:"clientID,omitempty"`
+	ExtraQueryParams string `json:"extraQueryParams,omitempty"`
 }
 
 // PingExample godoc
@@ -41,7 +46,6 @@ func getConfiguration(c *gin.Context) {
 	info, _ := debug.ReadBuildInfo()
 	var buildInfo = BuildInfo{}
 	for _, kv := range info.Settings {
-		fmt.Println(kv.Key)
 		if kv.Key == "vcs.time" {
 			buildInfo.CommitDate = kv.Value
 		}
@@ -49,10 +53,18 @@ func getConfiguration(c *gin.Context) {
 			buildInfo.Commit = kv.Value
 		}
 	}
-	c.JSON(http.StatusOK, PublicConfiguration{
+	var publicConfiguration = PublicConfiguration{
 		Build:   buildInfo,
 		Regions: configuration.Config.Regions,
-	})
+	}
+	if configuration.IsAuthenticationEnabled() {
+		publicConfiguration.OIDCConfiguration = &OIDCConfiguration{
+			IssuerURI:        configuration.Config.OIDC.IssuerURI,
+			ClientID:         configuration.Config.OIDC.ClientID,
+			ExtraQueryParams: configuration.Config.OIDC.ExtraQueryParams,
+		}
+	}
+	c.JSON(http.StatusOK, publicConfiguration)
 }
 
 func registerPublicHandlers(r *gin.RouterGroup) {
