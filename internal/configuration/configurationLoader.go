@@ -2,6 +2,8 @@ package configuration
 
 import (
 	_ "embed"
+	"encoding/json"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -26,5 +28,8 @@ func LoadConfiguration() {
 	err := viper.Unmarshal(&Config)
 	if err != nil {
 		panic(err)
+	}
+	if os.Getenv("regions") != "" {
+		json.Unmarshal([]byte(os.Getenv("regions")), &Config.Regions)
 	}
 }
