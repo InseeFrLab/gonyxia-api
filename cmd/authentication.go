@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"context"
-	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -20,15 +20,15 @@ func AuthMiddleware(ctx context.Context, verifier *oidc.IDTokenVerifier) gin.Han
 	return func(c *gin.Context) {
 		if !strings.HasPrefix(c.Request.URL.Path, "/public") {
 			tokenHeader := strings.TrimPrefix(c.Request.Header.Get("Authorization"), "Bearer ")
-			fmt.Printf("Authorization %s", tokenHeader)
-			fmt.Println()
 			token, err := verifier.Verify(ctx, tokenHeader)
 			if err != nil {
-				panic(err)
+				c.Status(http.StatusForbidden)
+				return
 			}
 			var IDTokenClaims Claims // ID Token payload is just JSON.
 			if err := token.Claims(&IDTokenClaims); err != nil {
-				panic(err)
+				c.Status(http.StatusForbidden)
+				return
 			}
 			c.Set("claims", IDTokenClaims)
 		}
