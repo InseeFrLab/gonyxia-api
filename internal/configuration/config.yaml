@@ -7,6 +7,9 @@ oidc:
   username-claim: 
   groups-claim: 
   extra-query-params:
+security:
+  cors:
+    allowed_origins: 
 rootPath: /api
 regions:
 - id: kub

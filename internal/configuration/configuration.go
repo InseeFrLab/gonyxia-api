@@ -4,11 +4,20 @@ type Configuration struct {
 	Authentication Authentication
 	RootPath       string
 	Regions        []Region
-	OIDC           OIDC `json:"oidc"`
+	OIDC           OIDC     `json:"oidc"`
+	Security       Security `json:"security"`
 }
 
 type Authentication struct {
 	Mode string `json:"mode"`
+}
+
+type Security struct {
+	CORS CORS `json:"cors"`
+}
+
+type CORS struct {
+	AllowedOrigins string `json:"allowed_origins"`
 }
 
 type OIDC struct {

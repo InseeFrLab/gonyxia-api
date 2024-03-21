@@ -8,6 +8,7 @@ import (
 	"time"
 
 	oidc "github.com/coreos/go-oidc/v3/oidc"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	cmd "github.com/inseefrlab/onyxia-api/cmd"
 	_ "github.com/inseefrlab/onyxia-api/docs"
@@ -58,5 +59,16 @@ func main() {
 
 	cmd.RegisterPrivateHandlers(privateRoutes)
 	cmd.RegisterPublicHandlers(publicRoutes)
+
+	if configuration.Config.Security.CORS.AllowedOrigins != "" {
+		r.Use(cors.New(cors.Config{
+			AllowOrigins:     []string{configuration.Config.Security.CORS.AllowedOrigins},
+			AllowMethods:     []string{"*"},
+			AllowHeaders:     []string{"Origin"},
+			ExposeHeaders:    []string{"Content-Length"},
+			AllowCredentials: true,
+			MaxAge:           12 * time.Hour,
+		}))
+	}
 	r.Run()
 }
