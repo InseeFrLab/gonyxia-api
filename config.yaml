@@ -4,8 +4,8 @@ oidc:
   issuer-uri: 
   clientID: 
   audience: 
-  username-claim: 
-  groups-claim: 
+  username-claim: preferred_username
+  groups-claim: groups
   extra-query-params:
 security:
   cors:

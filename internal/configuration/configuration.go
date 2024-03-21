@@ -6,7 +6,7 @@ type Configuration struct {
 	Authentication Authentication
 	RootPath       string
 	Regions        []Region
-	OIDC           OIDC     `json:"oidc"`
+	OIDC           OIDC     `yaml:"oidc" json:"oidc"`
 	Security       Security `json:"security"`
 }
 
@@ -23,7 +23,7 @@ type CORS struct {
 }
 
 type OIDC struct {
-	IssuerURI        string `json:"issuer-uri"`
+	IssuerURI        string `json:"issuer-uri" koanf:"issuer-uri"`
 	ClientID         string `json:"clientID"`
 	Audience         string `json:"audience"`
 	UsernameClaim    string `json:"username-claim"`

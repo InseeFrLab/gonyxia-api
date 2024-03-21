@@ -41,7 +41,6 @@ func userInfo(c *gin.Context) {
 			IP:       c.RemoteIP(),
 			Projects: []Project{{Name: "todo"}},
 		}
-
 	} else {
 		typedClaims := claims.(Claims)
 		userInfo = UserInfo{
