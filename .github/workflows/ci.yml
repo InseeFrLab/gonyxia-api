@@ -1,0 +1,48 @@
+name: Onyxia API CI
+
+on:
+  push:
+    branches:
+      - "**"
+    paths-ignore:
+      - 'docs/**'
+    tags:
+      - "*"
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+
+jobs:
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v5.5.1
+        with:
+          images: estragonthecat/onyxia-api 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: onyxia-api
+          platforms: linux/amd64
+          file: onyxia-api/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            ${{ steps.docker_meta.outputs.tags }}
+            ${{ github.ref == 'refs/heads/main' && 'estragonthecat/onyxia-api:latest' || '' }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
