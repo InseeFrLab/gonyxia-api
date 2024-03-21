@@ -17,7 +17,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /onyxia-api
 
 FROM alpine
 
+WORKDIR /app
 EXPOSE 8080
 ENV GIN_MODE release
-COPY --from=0 /onyxia-api /bin/onyxia-api
-CMD ["/bin/onyxia-api"]
+COPY --from=0 /onyxia-api /app/onyxia-api
+COPY config.yaml /app/config.yaml
+CMD ["/app/onyxia-api"]

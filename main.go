@@ -35,7 +35,6 @@ func main() {
 	publicRoutes := baseRoutes.Group("/public")
 
 	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
-	zap.L().Sugar().Infof("%s", configuration.Config.Authentication.Mode)
 	if strings.EqualFold(configuration.Config.Authentication.Mode, "openidconnect") {
 		fmt.Printf("Using OIDC authentication with issuer %s", configuration.Config.OIDC.IssuerURI)
 		fmt.Println()
