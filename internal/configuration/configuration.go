@@ -1,6 +1,8 @@
 package configuration
 
-import "strings"
+import (
+	"strings"
+)
 
 type Configuration struct {
 	Authentication Authentication
@@ -43,7 +45,7 @@ type Region struct {
 	Services struct {
 		Type                   string `json:"type"`
 		SingleNamespace        bool   `json:"singleNamespace"`
-		AllowNamespaceCreation bool   `json:"allowNamespaceCreation"`
+		AllowNamespaceCreation bool   `json:"allowNamespaceCreation,omitempty"`
 		NamespaceLabels        struct {
 		} `json:"namespaceLabels"`
 		NamespaceAnnotations struct {

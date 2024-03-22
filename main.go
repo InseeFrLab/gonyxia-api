@@ -29,6 +29,7 @@ var defaultConfiguration string
 
 func main() {
 	configuration.LoadConfiguration(defaultConfiguration)
+	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 	r := gin.Default()
 	baseRoutes := r.Group(configuration.Config.RootPath)
 	docs.SwaggerInfo.Description = "Swagger"
@@ -37,7 +38,6 @@ func main() {
 	privateRoutes := baseRoutes.Group("/")
 	publicRoutes := baseRoutes.Group("/public")
 	privateRoutes.Use(cmd.RegionResolver())
-	zap.ReplaceGlobals(zap.Must(zap.NewProduction()))
 	if strings.EqualFold(configuration.Config.Authentication.Mode, "openidconnect") {
 		fmt.Printf("Using OIDC authentication with issuer %s", configuration.Config.OIDC.IssuerURI)
 		fmt.Println()
@@ -58,7 +58,7 @@ func main() {
 	} else {
 		privateRoutes.Use(cmd.NoAuthMiddleware())
 	}
-
+	privateRoutes.Use(cmd.ProjectResolver())
 	kubernetes.InitClient()
 
 	cmd.RegisterPrivateHandlers(privateRoutes)

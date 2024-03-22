@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"go.uber.org/zap"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes"
@@ -50,4 +51,14 @@ func ListPods(namespace string) {
 func GetEvents(namespace string) watch.Interface {
 	events, _ := clientset.EventsV1().Events(namespace).Watch(context.TODO(), metav1.ListOptions{})
 	return events
+}
+
+func InitNamespace(namespace string) {
+	namespaceToCreate := corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:   namespace,
+			Labels: map[string]string{"onyxia_owner": "todo"},
+		},
+	}
+	clientset.CoreV1().Namespaces().Create(context.TODO(), &namespaceToCreate, metav1.CreateOptions{})
 }

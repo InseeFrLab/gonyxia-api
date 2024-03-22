@@ -7,14 +7,16 @@ import (
 
 func NoAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.Set("user", pkg.UserInfo{
+		requestContext := GetRequestContext(c)
+		requestContext.User = pkg.UserInfo{
 			Email:    "johndoe@example.com",
 			ID:       "johndoe",
 			Name:     "John Doe",
 			Groups:   []string{},
 			IP:       c.RemoteIP(),
-			Projects: []pkg.Project{{Name: "todo"}},
-		})
+			Projects: []pkg.Project{{Name: "todo", ID: "todooo"}},
+		}
+		SetRequestContext(c, requestContext)
 		c.Next()
 	}
 }

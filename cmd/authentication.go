@@ -2,13 +2,11 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
-	"github.com/inseefrlab/onyxia-api/internal/configuration"
 	pkg "github.com/inseefrlab/onyxia-api/pkg"
 )
 
@@ -21,6 +19,7 @@ type Claims struct {
 
 func AuthMiddleware(ctx context.Context, verifier *oidc.IDTokenVerifier) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		requestContext := GetRequestContext(c)
 		tokenHeader := strings.TrimPrefix(c.Request.Header.Get("Authorization"), "Bearer ")
 		token, err := verifier.Verify(ctx, tokenHeader)
 		if err != nil {
@@ -35,17 +34,15 @@ func AuthMiddleware(ctx context.Context, verifier *oidc.IDTokenVerifier) gin.Han
 		var allClaims map[string]interface{}
 		token.Claims(&allClaims)
 		c.Set("claims", IDTokenClaims)
-		region, _ := c.Get("region")
-		fmt.Println(region.(configuration.Region).ID)
-		c.Set("user", pkg.UserInfo{
+		requestContext.User = pkg.UserInfo{
 			Email:    IDTokenClaims.Email,
 			ID:       IDTokenClaims.ID,
 			Name:     IDTokenClaims.Name,
 			Groups:   IDTokenClaims.Groups,
 			IP:       c.RemoteIP(),
 			Projects: []pkg.Project{{Name: "todo"}},
-		})
-
+		}
+		SetRequestContext(c, requestContext)
 		c.Next()
 	}
 }

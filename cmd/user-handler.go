@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	pkg "github.com/inseefrlab/onyxia-api/pkg"
 )
 
 // @Summary Get user info
@@ -15,8 +15,12 @@ import (
 // @Success 200
 // @Router /user/info [get]
 func userInfo(c *gin.Context) {
-	user, _ := c.Get("user")
-	c.JSON(http.StatusOK, user.(pkg.UserInfo))
+	requestContext := GetRequestContext(c)
+	fmt.Printf("Project %s", requestContext.Project.ID)
+	fmt.Println()
+	fmt.Printf("Region %s", requestContext.Region.ID)
+	fmt.Println()
+	c.JSON(http.StatusOK, requestContext.User)
 }
 
 func registerUserHandlers(r *gin.RouterGroup) {
