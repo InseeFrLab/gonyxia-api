@@ -62,3 +62,15 @@ func InitNamespace(namespace string) {
 	}
 	clientset.CoreV1().Namespaces().Create(context.TODO(), &namespaceToCreate, metav1.CreateOptions{})
 }
+
+func GetOnyxiaResourceQuota(namespace string) (*corev1.ResourceQuota) {
+
+	resourceQuotas, _ := clientset.CoreV1().ResourceQuotas(namespace).Get(context.TODO(), "onyxia-quota", metav1.GetOptions{})
+	return resourceQuotas
+
+}
+
+func PostOnyxiaResourceQuotas(namespace string, quota (*corev1.ResourceQuota)) {
+
+	clientset.CoreV1().ResourceQuotas(namespace).Update(context.TODO(), quota, metav1.UpdateOptions{})
+}

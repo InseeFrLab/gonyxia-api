@@ -21,14 +21,6 @@ type MyServices struct {
 	Apps []App `apps:"apps"`
 }
 
-type Quotas struct {
-	Spec  []Quota `spec:"spec"`
-	Usage []Quota `usage:"usage"`
-}
-
-type Quota struct {
-}
-
 // @Summary List the services installed in a namespace.
 // @Schemes
 // @Description
@@ -54,15 +46,41 @@ func events(c *gin.Context) {
 	})
 }
 
+// @Summary List the quotas in a namespace.
+// @Schemes
+// @Description
+// @Tags My lab
+// @Produce json
+// @Success 200
+// @Router /my-lab/quota [get]
 func quotas(c *gin.Context) {
-	/*quotas := Quotas{}
-	for {
-		quotas.Quota = append
-	}*/
+	resourceQuotas := kubernetes.GetOnyxiaResourceQuota(namespace)
+	c.JSON(http.StatusOK, resourceQuotas.Status)
+}
+
+type model struct {
+    Namespace string `json:"namespace" example:"default" format:"string"` // Namespace of the quota
+    QuotaName string `json:"quotaName" example:"name" format:"string"`    // Name of the quota
+    NewLimit  int    `json:"newLimit" example:"100" format:"int"`          // New limit for the quota
+}
+
+
+// @Summary Change the quotas for a namespace.
+// @Schemes
+// @Description
+// @Tags My lab
+// @Success 200
+// @Accept json
+// @Produce json
+// @Param newQuota body model true "Modify quotas"
+// @Router /my-lab/quota [post]
+func updateOnyxiaQuota(c *gin.Context) {
+	//	kubernetes.PostOnyxiaResourceQuotas(namespace)
 }
 
 func registerMyLabHandlers(r *gin.RouterGroup) {
 	r.GET("/my-lab/services", myServices)
 	r.GET("/my-lab/events", events)
 	r.GET("/my-lab/quota", quotas)
+	r.POST("/my-lab/quota", updateOnyxiaQuota)
 }
