@@ -1,0 +1,98 @@
+definitions:
+  cmd.model:
+    properties:
+      namespace:
+        description: Namespace of the quota
+        example: default
+        format: string
+        type: string
+      newLimit:
+        description: New limit for the quota
+        example: 100
+        format: int
+        type: integer
+      quotaName:
+        description: Name of the quota
+        example: name
+        format: string
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /my-lab/quota:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: List the quotas in a namespace.
+      tags:
+      - My lab
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Modify quotas
+        in: body
+        name: newQuota
+        required: true
+        schema:
+          $ref: '#/definitions/cmd.model'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Change the quotas for a namespace.
+      tags:
+      - My lab
+  /my-lab/services:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: List the services installed in a namespace.
+      tags:
+      - My lab
+  /onboarding:
+    post:
+      description: Create or replace the namespace of the user or the namespace of
+        a group if the user is in the requested group and the according rbac policies.
+        with the group prefix / user prefix of the region
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Init a namespace for a user or a group
+      tags:
+      - Onboarding
+  /public/ip:
+    get:
+      description: Get the public IP (as seen by this app).
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Get your public IP address.
+      tags:
+      - public
+  /user/info:
+    get:
+      description: Get user info and projects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get user info
+      tags:
+      - user
+swagger: "2.0"
