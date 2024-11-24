@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Docker meta
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v5.5.1
+        uses: crazy-max/ghaction-docker-meta@v5.6.1
         with:
           images: inseefrlab/gonyxia-api
       - name: Set up QEMU
