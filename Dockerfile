@@ -1,4 +1,4 @@
-FROM golang:1.22.1
+FROM golang:1.23.5
 
 # Set destination for COPY
 WORKDIR /app
