@@ -2,7 +2,7 @@ module github.com/inseefrlab/onyxia-api
 
 go 1.23.0
 
-toolchain go1.23.5
+toolchain go1.23.6
 
 require (
 	github.com/coreos/go-oidc/v3 v3.12.0
